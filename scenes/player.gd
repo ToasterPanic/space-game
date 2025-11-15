@@ -1,10 +1,12 @@
 extends RigidBody2D
 
 var health = 1000
-var speed = 0
+var speed = 512
 var angular_target = 0
 
 var mouse_movement = Vector2()
+
+var laser_scene = preload("res://scenes/laser.tscn")
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -16,20 +18,23 @@ func _process(delta: float) -> void:
 		angular_velocity = deg_to_rad(120)
 		
 	if abs(angular_target) > 0.001:
-		angular_velocity += angular_target * 0.5
-		if angular_velocity > 5:
-			angular_velocity = 5
-		elif angular_velocity < -5:
-			angular_velocity = -5
-		angular_target -= angular_target * 0.5
+		angular_velocity = wrapf(angular_target - rotation, -PI, PI) * 6
 	else:
-		angular_velocity /= 1.2
+		angular_velocity /= 1.4
 	
+	if Input.is_action_just_pressed("fire"):
+		var laser = laser_scene.instantiate()
+		laser.creator = self 
+		
+		get_parent().add_child(laser)
+		
+		laser.global_position = global_position
+		laser.rotation = rotation 
 		
 	if Input.is_action_pressed("move_forward"):
 		linear_velocity = Vector2.UP.rotated(rotation) * speed
-	if Input.is_action_pressed("move_backward"):
-		linear_velocity = Vector2.UP.rotated(rotation) * (speed * -0.5)
+	#if Input.is_action_pressed("move_backward"):
+		#linear_velocity = Vector2.UP.rotated(rotation) * (speed * -0.5)
 	if Input.is_action_just_pressed("speed_up"):
 		speed += 16
 		
@@ -51,7 +56,7 @@ func _process(delta: float) -> void:
 		
 	$Speed.modulate.a -= 0.5 * delta
 		
-	modulate = Color(1, health / 1000, health / 1000)
+	modulate = Color(1, health / 1000.0, health / 1000.0)
 
 func _on_body_entered(body: Node) -> void:
 	if body.get_parent().get_name() == "Asteroids":

@@ -2,6 +2,7 @@ extends RigidBody2D
 
 @onready var player = get_parent().get_parent().get_node("Player")
 var type = "Small"
+var health = 999
 
 func random_respawn(distance_min = 2000):
 	var random_rotation = randf_range(-5, 5)
@@ -32,4 +33,3 @@ func _process(delta: float) -> void:
 	
 	if distance > 2100:
 		random_respawn()
-		print("RESPAWNED!")
