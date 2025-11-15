@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlaq3f3hiu07f"
-path="res://.godot/imported/godotwaka.png-ef0518417b4f997d237759e5551dd05d.ctex"
+uid="uid://8mmpq6qi7iww"
+path="res://.godot/imported/large_asteroid.png-8f36f5806d9bc95aedba81987645e989.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/godotwaka.png"
-dest_files=["res://.godot/imported/godotwaka.png-ef0518417b4f997d237759e5551dd05d.ctex"]
+source_file="res://textures/large_asteroid.png"
+dest_files=["res://.godot/imported/large_asteroid.png-8f36f5806d9bc95aedba81987645e989.ctex"]
 
 [params]
 
