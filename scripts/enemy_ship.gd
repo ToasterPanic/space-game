@@ -1,9 +1,14 @@
 extends RigidBody2D
 
-@onready var player = get_parent().get_node("Player")
+@onready var player = get_parent().get_parent().get_node("Player")
 
 var laser_scene = preload("res://scenes/laser.tscn")
 var health = 500
+var speed = 512
+var boost = 100
+
+var boosting = false
+
 var angle_to_fire = 20
 var concentration = 5
 var fire_rate = 0.5
@@ -12,7 +17,7 @@ var MODE_WANDER = 0
 var MODE_ATTACK = 1
 var MODE_FLEE = 2
 
-var mode = MODE_ATTACK
+var mode = MODE_WANDER
 
 var fire_cooldown = 0
 
@@ -20,7 +25,13 @@ var evading = false
 var evasion_direction = 1
 var evasion_direction_switch_time = 1
 
+var dead = false
+
+var catchup_boost = false
+var boost_cooldown = false
+
 func _process(delta: float) -> void:
+	if dead: return
 	
 	var angular_target = 0
 	var boosting = false
@@ -36,10 +47,15 @@ func _process(delta: float) -> void:
 		
 		angular_target = wrapf(angle - rotation, -PI, PI)
 		
-		if abs(rad_to_deg(angular_target)) < 20:
+		if abs(rad_to_deg(angular_target)) < angle_to_fire:
 			fire_cooldown += delta
 			if fire_cooldown > fire_rate:
 				fire_cooldown = 0
+				$Fire.pitch_scale = randf_range(0.7, 0.8)
+				$Fire.volume_db = -(player.position - position).length() * 0.01
+				print($Fire.volume_db)
+				$Fire.play()
+		
 				var laser = laser_scene.instantiate()
 				laser.creator = self 
 				
@@ -60,29 +76,33 @@ func _process(delta: float) -> void:
 		if abs(rad_to_deg(player_angular_target)) < angle_to_fire * 1.5:
 			evading = true
 			
-			
-		
-			
 		if evading:
-			if (player.position - position).length() > 360:
-				if evasion_direction > 0:
-					angular_target -= deg_to_rad(180 - 30)
-				angular_target += deg_to_rad(180)
-				evasion_direction_switch_time -= delta
+			if false and ((player.position - position).length() > 480) and (abs(rad_to_deg(player_angular_target)) < 180):
+				angular_target -= deg_to_rad(180 - 30)
 			else:
-				angular_target -= deg_to_rad(30 * evasion_direction)
+				angular_target -= deg_to_rad(90 * evasion_direction)
+				evasion_direction_switch_time -= delta
 				boosting = true
 				
 			if evasion_direction_switch_time <= 0:
-				evasion_direction_switch_time = randi_range(1.0, 1.0)
+				evasion_direction_switch_time = randf_range(1.75, 2.1)
 				evasion_direction *= -1
 				
 			concentration = 9
-			if abs(rad_to_deg(player_angular_target)) > angle_to_fire * 4:
+			if abs(rad_to_deg(player_angular_target)) > angle_to_fire * 3:
 				evading = false
 				concentration = 5
 		elif (player.position - position).length() < 128:
 			angular_target -= deg_to_rad(90)
+		elif (boost > 99) and ((player.position - position).length() > 256):
+			catchup_boost = true
+			
+		if catchup_boost:
+			if (boost < 70) or ((player.position - position).length() < 256):
+				catchup_boost = false
+				boosting = false
+			else:
+				boosting = true
 		
 		print(player_angular_target)
 	elif mode == MODE_FLEE:
@@ -104,8 +124,8 @@ func _process(delta: float) -> void:
 		
 		var player_angular_target = wrapf(player_angle - player.rotation, -PI, PI)
 		
-		if abs(rad_to_deg(player_angular_target)) < 5:
-			angular_target += deg_to_rad(45)
+		if abs(rad_to_deg(player_angular_target)) < angle_to_fire:
+			angular_target += deg_to_rad(45 * evasion_direction)
 			boosting = true
 			
 		if (player.position - position).length() < 128:
@@ -113,19 +133,48 @@ func _process(delta: float) -> void:
 		
 		if health <= 100:
 			boosting = true
+	else:
+		for n in $Sight.get_overlapping_bodies():
+			if n == player:
+				mode = MODE_ATTACK
 		
 	if abs(angular_target) > 0.1:
 		angular_velocity = angular_target * concentration
 	else:
 		angular_velocity /= 1.4
+	
+	$BoostParticles.emitting = boosting
+	
+	if boosting and (boost > 0) and not boost_cooldown:
+		linear_velocity = Vector2.UP.rotated(rotation) * 1024
+		boost -= delta * 50
+	else:
+		linear_velocity = Vector2.UP.rotated(rotation) * speed
+		boost += delta * 10
 		
-	linear_velocity = Vector2.UP.rotated(rotation) * 360
-	if boosting:
-		linear_velocity *= 2
+		if boost >= 33:
+			boost_cooldown = false
 		
 	modulate = Color(1, health / 500.0, health / 500.0)
 	
 	if health <= 0:
+		dead = true
+		
+		linear_velocity = Vector2()
+		$CollisionShape2D.queue_free()
+		$Sprite.queue_free()
+		$BoostParticles.queue_free()
+		mode = INF
+		
+		$Explode.play()
+		
+		modulate = Color(1, 1, 1)
+		
+		for n in $ExplosionParticles.get_children():
+			n.restart()
+		
+		await get_tree().create_timer(4).timeout
+		
 		queue_free()
 	
 	#rotation = angle

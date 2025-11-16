@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=3 uid="uid://0ypgp5onckx8"]
+
+[ext_resource type="Texture2D" uid="uid://dwtnu143dr0pn" path="res://textures/star.png" id="1_4j4pw"]
+[ext_resource type="Texture2D" uid="uid://bhh1abncpf3im" path="res://textures/fire.png" id="2_siv3g"]
+[ext_resource type="Texture2D" uid="uid://c6lv145f73g10" path="res://textures/laser_particle.png" id="3_frxng"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_k78ad"]
+particles_animation = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="Curve" id="Curve_3hjbq"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_n3q8t"]
+curve = SubResource("Curve_3hjbq")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8qs3y"]
+particle_flag_disable_z = true
+angle_min = -720.0
+angle_max = 720.0
+spread = 180.0
+initial_velocity_max = 256.0
+angular_velocity_min = -720.0
+angular_velocity_max = 719.99994
+gravity = Vector3(0, 0, 0)
+scale_min = 0.19999999
+scale_max = 0.29999998
+alpha_curve = SubResource("CurveTexture_n3q8t")
+anim_offset_max = 1.0
+turbulence_enabled = true
+turbulence_noise_scale = 10.0
+turbulence_influence_min = 0.010000001
+turbulence_influence_max = 0.05
+
+[node name="ExplosionParticles" type="Node2D"]
+
+[node name="Particles1" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_k78ad")
+emitting = false
+amount = 32
+texture = ExtResource("1_4j4pw")
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_8qs3y")
+
+[node name="Particles2" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_k78ad")
+emitting = false
+amount = 32
+texture = ExtResource("2_siv3g")
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_8qs3y")
+
+[node name="Particles3" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_k78ad")
+emitting = false
+amount = 16
+texture = ExtResource("3_frxng")
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_8qs3y")

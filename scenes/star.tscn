@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bfa533n1gdi7y"]
+
+[ext_resource type="Texture2D" uid="uid://dwtnu143dr0pn" path="res://textures/star.png" id="1_mcqwg"]
+[ext_resource type="Script" uid="uid://j1jggotqgjn0" path="res://scripts/star.gd" id="2_j6vao"]
+
+[node name="Star" type="Sprite2D"]
+modulate = Color(392.18054, 392.18054, 392.18054, 1)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_mcqwg")
+script = ExtResource("2_j6vao")

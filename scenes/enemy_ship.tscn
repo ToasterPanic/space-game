@@ -1,0 +1,77 @@
+[gd_scene load_steps=13 format=3 uid="uid://cpcmpoxyvvtp6"]
+
+[ext_resource type="Script" uid="uid://c240ilhd7wbrr" path="res://scripts/enemy_ship.gd" id="1_h5p0y"]
+[ext_resource type="Texture2D" uid="uid://bf4bvpbpudr07" path="res://textures/ship_1.png" id="2_62ykb"]
+[ext_resource type="Texture2D" uid="uid://iisbg4jossm5" path="res://textures/ship_2.png" id="2_h5p0y"]
+[ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="2_tvo3c"]
+[ext_resource type="AudioStream" uid="uid://bcc3p2etgrbd8" path="res://sounds/fire.ogg" id="3_7etwm"]
+[ext_resource type="AudioStream" uid="uid://ciijetw1net7m" path="res://sounds/boost.mp3" id="4_7etwm"]
+[ext_resource type="AudioStream" uid="uid://cimj0bvhc5a48" path="res://sounds/explode.mp3" id="5_g6g56"]
+
+[sub_resource type="Curve" id="Curve_tvo3c"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_u5sy4"]
+curve = SubResource("Curve_tvo3c")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g6g56"]
+particle_flag_align_y = true
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 0.0
+initial_velocity_min = 1024.0
+initial_velocity_max = 1024.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.22999999
+scale_max = 0.25
+scale_curve = SubResource("CurveTexture_u5sy4")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uwrxv"]
+radius = 26.24881
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iywne"]
+radius = 1100.0
+
+[node name="EnemyShip" type="RigidBody2D"]
+contact_monitor = true
+max_contacts_reported = 4
+linear_damp = 3.0
+angular_damp = 2.0
+script = ExtResource("1_h5p0y")
+
+[node name="ExplosionParticles" parent="." instance=ExtResource("2_tvo3c")]
+
+[node name="BoostParticles" type="GPUParticles2D" parent="."]
+modulate = Color(0, 1, 0.7058824, 1)
+scale = Vector2(0.25, 0.25)
+amount = 24
+texture = ExtResource("2_62ykb")
+lifetime = 0.25
+process_material = SubResource("ParticleProcessMaterial_g6g56")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_h5p0y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uwrxv")
+
+[node name="Sight" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sight"]
+shape = SubResource("CircleShape2D_iywne")
+
+[node name="Explode" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_g6g56")
+
+[node name="Fire" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_7etwm")
+pitch_scale = 0.7
+
+[node name="BoostSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_7etwm")
+volume_db = -8.0
+pitch_scale = 0.8
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
