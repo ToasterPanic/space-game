@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dafar7bnl2xol"]
+[gd_scene load_steps=24 format=3 uid="uid://dafar7bnl2xol"]
 
 [ext_resource type="Script" uid="uid://h3xl3qwkg10j" path="res://scripts/game.gd" id="1_gee14"]
 [ext_resource type="Script" uid="uid://cq8ok3bveef5q" path="res://scenes/player.gd" id="1_lnu2h"]
@@ -8,10 +8,12 @@
 [ext_resource type="AudioStream" uid="uid://bcc3p2etgrbd8" path="res://sounds/fire.ogg" id="3_u5sy4"]
 [ext_resource type="AudioStream" uid="uid://ciijetw1net7m" path="res://sounds/boost.mp3" id="5_0tnpc"]
 [ext_resource type="PackedScene" uid="uid://dvatrgjfpg6sl" path="res://scenes/asteroid.tscn" id="5_iywne"]
-[ext_resource type="PackedScene" uid="uid://cpcmpoxyvvtp6" path="res://scenes/enemy_ship.tscn" id="5_u5sy4"]
 [ext_resource type="AudioStream" uid="uid://cimj0bvhc5a48" path="res://sounds/explode.mp3" id="6_dinhu"]
+[ext_resource type="AudioStream" uid="uid://4abghqdw3mgg" path="res://sounds/collision.mp3" id="6_kvuet"]
 [ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="7_kvpfn"]
 [ext_resource type="PackedScene" uid="uid://bfa533n1gdi7y" path="res://scenes/star.tscn" id="10_vtaks"]
+[ext_resource type="Script" uid="uid://bvkcdaa4ll637" path="res://scripts/ui.gd" id="14_trtic"]
+[ext_resource type="Theme" uid="uid://dv800mwl26xl1" path="res://scenes/theme.tres" id="15_ir15t"]
 
 [sub_resource type="Curve" id="Curve_p57ef"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -36,7 +38,8 @@ scale_curve = SubResource("CurveTexture_kvpfn")
 radius = 26.24881
 
 [sub_resource type="LabelSettings" id="LabelSettings_lnu2h"]
-line_spacing = -9.0
+line_spacing = -6.0
+font_size = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lbhrr"]
 content_margin_left = 2.0
@@ -52,18 +55,29 @@ corner_detail = 6
 
 [sub_resource type="LabelSettings" id="LabelSettings_dinhu"]
 font_size = 96
+font_color = Color(1, 0, 0, 1)
+outline_size = 16
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_kvuet"]
+font_size = 128
+
+[sub_resource type="LabelSettings" id="LabelSettings_trtic"]
+font_size = 24
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_gee14")
 
 [node name="Imperfect" type="AudioStreamPlayer" parent="."]
+process_mode = 3
 stream = ExtResource("1_p57ef")
-volume_db = -32.0
-pitch_scale = 0.5
+volume_db = -12.0
 autoplay = true
+bus = &"Music"
 parameters/looping = true
 
 [node name="Player" type="RigidBody2D" parent="."]
+position = Vector2(0, 7500)
 contact_monitor = true
 max_contacts_reported = 4
 linear_damp = 3.0
@@ -77,8 +91,14 @@ stream = ExtResource("3_u5sy4")
 stream = ExtResource("5_0tnpc")
 volume_db = -8.0
 
+[node name="Collision" type="AudioStreamPlayer" parent="Player"]
+stream = ExtResource("6_kvuet")
+volume_db = -6.0
+pitch_scale = 0.5
+
 [node name="Explode" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("6_dinhu")
+volume_db = 12.0
 
 [node name="BoostParticles" type="GPUParticles2D" parent="Player"]
 modulate = Color(0, 1, 0.7058824, 1)
@@ -99,8 +119,8 @@ texture = ExtResource("1_uwrxv")
 shape = SubResource("CircleShape2D_uwrxv")
 
 [node name="Camera" type="Camera2D" parent="Player"]
+position = Vector2(0, -163)
 ignore_rotation = false
-zoom = Vector2(0.666, 0.666)
 
 [node name="Speed" type="ProgressBar" parent="Player"]
 custom_minimum_size = Vector2(16, 64)
@@ -196,10 +216,22 @@ position = Vector2(-505, 624)
 [node name="Asteroid5" parent="Asteroids" instance=ExtResource("5_iywne")]
 position = Vector2(-1496, 210)
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Asteroid6" parent="Asteroids" instance=ExtResource("5_iywne")]
+position = Vector2(-1112, -349)
 
-[node name="EnemyShip" parent="Enemies" instance=ExtResource("5_u5sy4")]
-position = Vector2(1163, -19)
+[node name="Asteroid7" parent="Asteroids" instance=ExtResource("5_iywne")]
+position = Vector2(538, -425)
+
+[node name="Asteroid8" parent="Asteroids" instance=ExtResource("5_iywne")]
+position = Vector2(807, 517)
+
+[node name="Asteroid9" parent="Asteroids" instance=ExtResource("5_iywne")]
+position = Vector2(-505, 624)
+
+[node name="Asteroid10" parent="Asteroids" instance=ExtResource("5_iywne")]
+position = Vector2(-1496, 210)
+
+[node name="Enemies" type="Node2D" parent="."]
 
 [node name="Stars" type="Node2D" parent="."]
 
@@ -209,14 +241,16 @@ position = Vector2(-175, -35)
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Control" type="Control" parent="CanvasLayer"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("14_trtic")
 
-[node name="Label" type="Label" parent="CanvasLayer/Control"]
+[node name="CombatInitiated" type="Label" parent="CanvasLayer/Control"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -225,8 +259,72 @@ offset_left = -496.5
 offset_right = 496.5
 offset_bottom = 175.0
 grow_horizontal = 2
-text = "!!! IN COMBAT !!!"
+text = "COMBAT INITIATED!"
 label_settings = SubResource("LabelSettings_dinhu")
 horizontal_alignment = 1
 
+[node name="ZoneText" type="Label" parent="CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -496.5
+offset_top = -175.0
+offset_right = 496.5
+grow_horizontal = 2
+grow_vertical = 0
+text = "PLEASANT ORBIT - 1000du"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Pause" type="ColorRect" parent="CanvasLayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.79607844)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/Pause"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Control/Pause/VBoxContainer"]
+layout_mode = 2
+text = "paused"
+label_settings = SubResource("LabelSettings_kvuet")
+
+[node name="Label2" type="Label" parent="CanvasLayer/Control/Pause/VBoxContainer"]
+layout_mode = 2
+text = "Steer with your mouse
+Use scroll wheel to set speed (or hit ALT to increase and CTRL to decrease)
+Hold W to move
+Hold SHIFT to boost - use wisely, as it has limited charge
+Left click to shoot
+Right click to zoom (cannot move while zooming!)"
+label_settings = SubResource("LabelSettings_trtic")
+
+[node name="HFlowContainer" type="HFlowContainer" parent="CanvasLayer/Control/Pause/VBoxContainer"]
+layout_mode = 2
+
+[node name="NewEnemy" type="Button" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+theme = ExtResource("15_ir15t")
+text = "summon new enemy"
+
 [connection signal="body_entered" from="Player" to="Player" method="_on_body_entered"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/NewEnemy" to="." method="_on_new_enemy_pressed"]

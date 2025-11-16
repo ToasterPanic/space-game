@@ -93,12 +93,13 @@ func _process(delta: float) -> void:
 				evading = false
 				concentration = 5
 		elif (player.position - position).length() < 128:
-			angular_target -= deg_to_rad(90)
-		elif (boost > 99) and ((player.position - position).length() > 256):
+			angular_target -= deg_to_rad(90 * evasion_direction)
+			evasion_direction_switch_time -= delta
+		elif (boost > 99) and ((player.position - position).length() > 380):
 			catchup_boost = true
 			
 		if catchup_boost:
-			if (boost < 70) or ((player.position - position).length() < 256):
+			if (boost < 70) or ((player.position - position).length() < 320):
 				catchup_boost = false
 				boosting = false
 			else:

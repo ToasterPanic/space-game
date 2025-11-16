@@ -1,6 +1,7 @@
 extends RigidBody2D
 
-@onready var player = get_parent().get_parent().get_node("Player")
+@onready var game = get_parent().get_parent()
+@onready var player = game.get_node("Player")
 var type = "Small"
 var health = 999
 
@@ -24,7 +25,7 @@ func _ready() -> void:
 			if n.get_name() != type:
 				n.queue_free()
 		
-	random_respawn(512)
+	random_respawn()
 
 func _process(delta: float) -> void:
 	if linear_velocity.x > -64:
@@ -32,4 +33,18 @@ func _process(delta: float) -> void:
 	var distance = abs((player.global_position - global_position).length())
 	
 	if distance > 2100:
+		if game.asteroid_quota < get_parent().get_child_count():
+			queue_free()
+			return
+			
+		if game.asteroid_quota > get_parent().get_child_count():
+			var extra_asteroids_needed = game.asteroid_quota - get_parent().get_child_count()
+			
+			var i = 0 
+			while i < extra_asteroids_needed:
+				var new_asteroid = game.asteroid_scene.instantiate()
+				get_parent().add_child(new_asteroid)
+			
+				i += 1
+			
 		random_respawn()

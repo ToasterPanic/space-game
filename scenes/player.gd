@@ -6,14 +6,20 @@ var boost = 100
 var boosting = false
 var angular_target = 0
 
+var collision_cooldown = 0
+
 var mouse_movement = Vector2()
 
 var laser_scene = preload("res://scenes/laser.tscn")
+
+@onready var game = get_parent()
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _process(delta: float) -> void:
+	collision_cooldown -= delta 
+	
 	if Input.is_action_pressed("rotate_left"):
 		angular_velocity = deg_to_rad(-120)
 	if Input.is_action_pressed("rotate_right"):
@@ -40,8 +46,10 @@ func _process(delta: float) -> void:
 	$BoostParticles.emitting = boosting
 	
 	if boosting:
+		if game.camera_trauma < 4:
+			game.camera_trauma = 4
 		linear_velocity = Vector2.UP.rotated(rotation) * 1024
-		boost -= delta * 50
+		boost -= delta * 0
 		if boost <= 0:
 			boosting = false
 			
@@ -51,8 +59,16 @@ func _process(delta: float) -> void:
 			$Camera.zoom.x = 0.5
 			
 		$Camera.zoom.y = $Camera.zoom.x
+		
+	if Input.is_action_pressed("zoom"):
+		$Camera.zoom.x -= delta * 1
+		
+		if $Camera.zoom.x < 0.5:
+			$Camera.zoom.x = 0.5
 			
-	elif Input.is_action_pressed("move_forward"):
+		$Camera.zoom.y = $Camera.zoom.x
+			
+	elif Input.is_action_pressed("move_forward") and not boosting:
 		linear_velocity = Vector2.UP.rotated(rotation) * speed
 	#if Input.is_action_pressed("move_backward"):
 		#linear_velocity = Vector2.UP.rotated(rotation) * (speed * -0.5)
@@ -88,8 +104,9 @@ func _process(delta: float) -> void:
 		if boost > 100:
 			boost = 100
 			
-		$Camera.zoom.x -= ($Camera.zoom.x - 0.666) * 0.4
-		$Camera.zoom.y = $Camera.zoom.x
+		if not Input.is_action_pressed("zoom"):
+			$Camera.zoom.x -= ($Camera.zoom.x - 0.666) * 0.4
+			$Camera.zoom.y = $Camera.zoom.x
 		
 	$Speed.modulate.a -= 0.5 * delta
 	
@@ -104,9 +121,34 @@ func _process(delta: float) -> void:
 	modulate = Color(1, health / 1000.0, health / 1000.0)
 
 func _on_body_entered(body: Node) -> void:
+	if collision_cooldown > 0: return 
+	
 	if body.get_parent().get_name() == "Asteroids":
-		if body.linear_velocity.length() > 120:
-			health -= body.linear_velocity.length() / 7
+		if body.linear_velocity.length() + linear_velocity.length() > 128:
+			$Collision.pitch_scale = randi_range(0.7, 0.9)
+			$Collision.play()
+				
+			game.camera_trauma += 16
+			
+			health -= body.linear_velocity.length() / 2.5
+			
+			collision_cooldown = 0.3
+			
+	if body.get_parent().get_name() == "Enemies":
+		if body.linear_velocity.length() + linear_velocity.length() > 400:
+			$Collision.pitch_scale = randi_range(0.3, 0.4)
+			$Collision.play()
+			
+			collision_cooldown = 0.3
+			
+			game.camera_trauma += 4
+			if body.linear_velocity.length() + linear_velocity.length() > 1024 + 524:
+				game.camera_trauma += 12
+				
+				health -= ((body.linear_velocity.length() + linear_velocity.length()) / 3) * (linear_velocity.length() / body.linear_velocity.length())
+				body.health -= ((body.linear_velocity.length() + linear_velocity.length()) / 6) * (body.linear_velocity.length() / linear_velocity.length())
+				
+				
 
 func _input(event):
 	if event is InputEventMouseMotion:
