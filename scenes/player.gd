@@ -20,6 +20,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	collision_cooldown -= delta 
 	
+	$NavigatorArrow.rotation = -rotation + (game.get_node("PointsOfInterest/SpaceStation").global_position - global_position).normalized().angle() - rad_to_deg(90)
+	
 	if Input.is_action_pressed("rotate_left"):
 		angular_velocity = deg_to_rad(-120)
 	if Input.is_action_pressed("rotate_right"):
@@ -154,3 +156,9 @@ func _input(event):
 	if event is InputEventMouseMotion:
 		mouse_movement = event.relative
 		angular_target = mouse_movement.x / 64
+	elif event.is_action_pressed("interact"):
+		for n in game.get_node("PointsOfInterest").get_children():
+			if n.get_node("InteractArea").get_overlapping_bodies().has(self):
+				if n.get_name() == "SpaceStation":
+					health = 1000
+					boost = 100

@@ -50,6 +50,17 @@ func _ready() -> void:
 		i += 1
 
 func _process(delta: float) -> void:
+	$UpGuide.global_position = $Player.global_position
+	$UpGuide.rotation = (Vector2(0, 0) - $Player.global_position).normalized().angle() + rad_to_deg(90)
+	
+	$CanvasLayer/Control/InteractText.visible = false
+	
+	for n in $PointsOfInterest.get_children():
+		if n.get_node("InteractArea").get_overlapping_bodies().has($Player):
+			$CanvasLayer/Control/InteractText.visible = true
+			if n.get_name() == "SpaceStation":
+				$CanvasLayer/Control/InteractText.text = "press E to heal and refuel"
+	
 	var player_targeted = false
 	
 	for n in $Enemies.get_children():
@@ -89,11 +100,13 @@ func _process(delta: float) -> void:
 	
 	var current_zone = null
 	
+	var distance = $Player.global_position.length()
+	
 	for n in zones:
-		if $Player.global_position.y > n.distance:
+		if distance > n.distance:
 			current_zone = n
 			
-	$CanvasLayer/Control/ZoneText.text = current_zone.name + " - " + str(floorf($Player.global_position.y)) + "u"
+	$CanvasLayer/Control/ZoneText.text = current_zone.name + " - " + str(floorf(distance)) + "u"
 	
 	asteroid_quota = current_zone.asteroid_quota
 

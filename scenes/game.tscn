@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://dafar7bnl2xol"]
+[gd_scene load_steps=28 format=3 uid="uid://dafar7bnl2xol"]
 
 [ext_resource type="Script" uid="uid://h3xl3qwkg10j" path="res://scripts/game.gd" id="1_gee14"]
 [ext_resource type="Script" uid="uid://cq8ok3bveef5q" path="res://scenes/player.gd" id="1_lnu2h"]
@@ -12,8 +12,13 @@
 [ext_resource type="AudioStream" uid="uid://4abghqdw3mgg" path="res://sounds/collision.mp3" id="6_kvuet"]
 [ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="7_kvpfn"]
 [ext_resource type="PackedScene" uid="uid://bfa533n1gdi7y" path="res://scenes/star.tscn" id="10_vtaks"]
+[ext_resource type="Texture2D" uid="uid://b0nvjetek36rr" path="res://textures/navigator_arrow.png" id="11_ca42v"]
 [ext_resource type="Script" uid="uid://bvkcdaa4ll637" path="res://scripts/ui.gd" id="14_trtic"]
+[ext_resource type="Texture2D" uid="uid://ca1myb2b8kl7u" path="res://textures/space_station.png" id="15_ca42v"]
 [ext_resource type="Theme" uid="uid://dv800mwl26xl1" path="res://scenes/theme.tres" id="15_ir15t"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rysoc"]
+size = Vector2(2048, 2048)
 
 [sub_resource type="Curve" id="Curve_p57ef"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -59,6 +64,11 @@ font_color = Color(1, 0, 0, 1)
 outline_size = 16
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_rysoc"]
+font_size = 32
+outline_size = 16
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_kvuet"]
 font_size = 128
 
@@ -68,6 +78,16 @@ font_size = 24
 [node name="Game" type="Node2D"]
 script = ExtResource("1_gee14")
 
+[node name="Stars" type="Node2D" parent="."]
+
+[node name="Star" parent="Stars" instance=ExtResource("10_vtaks")]
+position = Vector2(-175, -35)
+
+[node name="UpGuide" type="ColorRect" parent="."]
+offset_right = 4.0
+offset_bottom = 1e+16
+color = Color(1, 1, 1, 0.19607843)
+
 [node name="Imperfect" type="AudioStreamPlayer" parent="."]
 process_mode = 3
 stream = ExtResource("1_p57ef")
@@ -75,6 +95,18 @@ volume_db = -12.0
 autoplay = true
 bus = &"Music"
 parameters/looping = true
+
+[node name="PointsOfInterest" type="Node2D" parent="."]
+
+[node name="SpaceStation" type="Sprite2D" parent="PointsOfInterest"]
+position = Vector2(0, 6814)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("15_ca42v")
+
+[node name="InteractArea" type="Area2D" parent="PointsOfInterest/SpaceStation"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PointsOfInterest/SpaceStation/InteractArea"]
+shape = SubResource("RectangleShape2D_rysoc")
 
 [node name="Player" type="RigidBody2D" parent="."]
 position = Vector2(0, 7500)
@@ -114,6 +146,10 @@ process_material = SubResource("ParticleProcessMaterial_gee14")
 [node name="Sprite2D" type="Sprite2D" parent="Player"]
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_uwrxv")
+
+[node name="NavigatorArrow" type="Sprite2D" parent="Player"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("11_ca42v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
 shape = SubResource("CircleShape2D_uwrxv")
@@ -233,11 +269,6 @@ position = Vector2(-1496, 210)
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="Stars" type="Node2D" parent="."]
-
-[node name="Star" parent="Stars" instance=ExtResource("10_vtaks")]
-position = Vector2(-175, -35)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="Control" type="Control" parent="CanvasLayer"]
@@ -261,6 +292,24 @@ offset_bottom = 175.0
 grow_horizontal = 2
 text = "COMBAT INITIATED!"
 label_settings = SubResource("LabelSettings_dinhu")
+horizontal_alignment = 1
+
+[node name="InteractText" type="Label" parent="CanvasLayer/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -496.5
+offset_top = -17.0
+offset_right = 496.5
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "press E to heal & refuel"
+label_settings = SubResource("LabelSettings_rysoc")
 horizontal_alignment = 1
 
 [node name="ZoneText" type="Label" parent="CanvasLayer/Control"]
