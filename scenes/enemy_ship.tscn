@@ -1,12 +1,14 @@
-[gd_scene load_steps=13 format=3 uid="uid://cpcmpoxyvvtp6"]
+[gd_scene load_steps=15 format=3 uid="uid://cpcmpoxyvvtp6"]
 
 [ext_resource type="Script" uid="uid://c240ilhd7wbrr" path="res://scripts/enemy_ship.gd" id="1_h5p0y"]
-[ext_resource type="Texture2D" uid="uid://bf4bvpbpudr07" path="res://textures/ship_1.png" id="2_62ykb"]
 [ext_resource type="Texture2D" uid="uid://iisbg4jossm5" path="res://textures/ship_2.png" id="2_h5p0y"]
 [ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="2_tvo3c"]
 [ext_resource type="AudioStream" uid="uid://bcc3p2etgrbd8" path="res://sounds/fire.ogg" id="3_7etwm"]
+[ext_resource type="Texture2D" uid="uid://bf46f0r0hpyes" path="res://textures/ship_3.png" id="4_4okw3"]
 [ext_resource type="AudioStream" uid="uid://ciijetw1net7m" path="res://sounds/boost.mp3" id="4_7etwm"]
 [ext_resource type="AudioStream" uid="uid://cimj0bvhc5a48" path="res://sounds/explode.mp3" id="5_g6g56"]
+[ext_resource type="Texture2D" uid="uid://3ws0rpjgwlgh" path="res://textures/ship_4.png" id="5_nvmi4"]
+[ext_resource type="Texture2D" uid="uid://cd4q62mbek5tf" path="res://textures/ship_5.png" id="6_yttec"]
 
 [sub_resource type="Curve" id="Curve_tvo3c"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -42,17 +44,63 @@ script = ExtResource("1_h5p0y")
 
 [node name="ExplosionParticles" parent="." instance=ExtResource("2_tvo3c")]
 
-[node name="BoostParticles" type="GPUParticles2D" parent="."]
+[node name="Ships" type="Node2D" parent="."]
+
+[node name="Ship2" type="Node2D" parent="Ships"]
+
+[node name="BoostParticles" type="GPUParticles2D" parent="Ships/Ship2"]
 modulate = Color(0, 1, 0.7058824, 1)
 scale = Vector2(0.25, 0.25)
 amount = 24
-texture = ExtResource("2_62ykb")
+texture = ExtResource("2_h5p0y")
 lifetime = 0.25
 process_material = SubResource("ParticleProcessMaterial_g6g56")
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="Ships/Ship2"]
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_h5p0y")
+
+[node name="Ship3" type="Node2D" parent="Ships"]
+
+[node name="BoostParticles" type="GPUParticles2D" parent="Ships/Ship3"]
+modulate = Color(0, 1, 0.7058824, 1)
+scale = Vector2(0.25, 0.25)
+amount = 24
+texture = ExtResource("4_4okw3")
+lifetime = 0.25
+process_material = SubResource("ParticleProcessMaterial_g6g56")
+
+[node name="Sprite" type="Sprite2D" parent="Ships/Ship3"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_4okw3")
+
+[node name="Ship4" type="Node2D" parent="Ships"]
+
+[node name="BoostParticles" type="GPUParticles2D" parent="Ships/Ship4"]
+modulate = Color(0, 1, 0.7058824, 1)
+scale = Vector2(0.25, 0.25)
+amount = 24
+texture = ExtResource("5_nvmi4")
+lifetime = 0.25
+process_material = SubResource("ParticleProcessMaterial_g6g56")
+
+[node name="Sprite" type="Sprite2D" parent="Ships/Ship4"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("5_nvmi4")
+
+[node name="Ship5" type="Node2D" parent="Ships"]
+
+[node name="BoostParticles" type="GPUParticles2D" parent="Ships/Ship5"]
+modulate = Color(0, 1, 0.7058824, 1)
+scale = Vector2(0.25, 0.25)
+amount = 24
+texture = ExtResource("6_yttec")
+lifetime = 0.25
+process_material = SubResource("ParticleProcessMaterial_g6g56")
+
+[node name="Sprite" type="Sprite2D" parent="Ships/Ship5"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("6_yttec")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_uwrxv")

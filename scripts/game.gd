@@ -61,6 +61,9 @@ func _process(delta: float) -> void:
 	
 	$PointsOfInterest.rotation_degrees += delta * 0.03
 	
+	if $CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/FastOrbit.button_pressed:
+		$PointsOfInterest.rotation_degrees += delta * 1
+	
 	$CanvasLayer/Control/InteractText.visible = false
 	
 	for n in $PointsOfInterest.get_children():
@@ -137,3 +140,11 @@ func _on_settings_pressed() -> void:
 
 func _on_suicide_pressed() -> void:
 	$Player.health = 0
+
+
+func _on_space_station_pressed() -> void:
+	$Player.global_position = $PointsOfInterest/SpaceStation.global_position
+
+
+func _on_test_planet_pressed() -> void:
+	$Player.global_position = $PointsOfInterest/TestPlanet.global_position

@@ -30,8 +30,22 @@ var dead = false
 var catchup_boost = false
 var boost_cooldown = false
 
+func _ready() -> void:
+	var ships = $Ships.get_children()
+	
+	var ship = ships[randi_range(0, ships.size() - 1)]
+	
+	for n in ship.get_children():
+		ship.remove_child(n)
+		add_child(n)
+		
+	$Ships.queue_free()
+
 func _process(delta: float) -> void:
 	if dead: return
+	
+	if (player.global_position - global_position).length() > 1280:
+		queue_free()
 	
 	var angular_target = 0
 	var boosting = false

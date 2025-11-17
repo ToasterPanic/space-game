@@ -1,6 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dvatrgjfpg6sl"]
+[gd_scene load_steps=9 format=3 uid="uid://dvatrgjfpg6sl"]
 
 [ext_resource type="Script" uid="uid://dmuo3jdw0wxhn" path="res://scripts/asteroid.gd" id="1_6mo6b"]
+[ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="2_pwrvu"]
 [ext_resource type="Texture2D" uid="uid://bt7fbqpk3pf6n" path="res://textures/small_asteroid.png" id="2_t4se3"]
 [ext_resource type="Texture2D" uid="uid://d3nege6jucoho" path="res://textures/medium_asteroid.png" id="3_pnq5b"]
 [ext_resource type="Texture2D" uid="uid://8mmpq6qi7iww" path="res://textures/large_asteroid.png" id="4_pwrvu"]
@@ -18,6 +19,8 @@ radius = 58.0
 linear_damp = 1.0
 angular_damp = 2.0
 script = ExtResource("1_6mo6b")
+
+[node name="ExplosionParticles" parent="." instance=ExtResource("2_pwrvu")]
 
 [node name="Small" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_lnu2h")

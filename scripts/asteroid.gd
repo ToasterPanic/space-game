@@ -3,7 +3,8 @@ extends RigidBody2D
 @onready var game = get_parent().get_parent()
 @onready var player = game.get_node("Player")
 var type = "Small"
-var health = 999
+var health = 500
+var dead = false
 
 func random_respawn(distance_min = 2000):
 	var random_rotation = randf_range(-5, 5)
@@ -28,6 +29,11 @@ func _ready() -> void:
 	random_respawn()
 
 func _process(delta: float) -> void:
+	if dead:
+		return
+		
+	modulate = Color(1, health / 500.0, health / 500.0)
+	
 	if linear_velocity.x > -64:
 		linear_velocity.x -= delta * 16
 	var distance = abs((player.global_position - global_position).length())
@@ -48,3 +54,19 @@ func _process(delta: float) -> void:
 				i += 1
 			
 		random_respawn()
+		
+	if health <= 0:
+		dead = true
+		
+		linear_velocity = Vector2()
+		for n in get_children():
+			if n.get_name() != "ExplosionParticles": n.queue_free()
+		
+		modulate = Color(1, 1, 1)
+		
+		for n in $ExplosionParticles.get_children():
+			n.restart()
+		
+		await get_tree().create_timer(4).timeout
+		
+		queue_free()

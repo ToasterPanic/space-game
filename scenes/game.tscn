@@ -1,7 +1,6 @@
-[gd_scene load_steps=32 format=3 uid="uid://dafar7bnl2xol"]
+[gd_scene load_steps=34 format=3 uid="uid://dafar7bnl2xol"]
 
 [ext_resource type="Script" uid="uid://h3xl3qwkg10j" path="res://scripts/game.gd" id="1_gee14"]
-[ext_resource type="Script" uid="uid://cq8ok3bveef5q" path="res://scenes/player.gd" id="1_lnu2h"]
 [ext_resource type="AudioStream" uid="uid://dtmjs7ymr4w2w" path="res://sounds/imperfect.mp3" id="1_p57ef"]
 [ext_resource type="Texture2D" uid="uid://bf4bvpbpudr07" path="res://textures/ship_1.png" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://br17pa6kfcw5p" path="res://scenes/laser.tscn" id="3_lbhrr"]
@@ -9,9 +8,11 @@
 [ext_resource type="AudioStream" uid="uid://ciijetw1net7m" path="res://sounds/boost.mp3" id="5_0tnpc"]
 [ext_resource type="PackedScene" uid="uid://dvatrgjfpg6sl" path="res://scenes/asteroid.tscn" id="5_iywne"]
 [ext_resource type="Texture2D" uid="uid://04h2pydmss6l" path="res://textures/sun.png" id="5_rysoc"]
+[ext_resource type="Texture2D" uid="uid://vaptoo2wcf10" path="res://textures/test_planet.png" id="5_ssvqc"]
 [ext_resource type="AudioStream" uid="uid://cimj0bvhc5a48" path="res://sounds/explode.mp3" id="6_dinhu"]
 [ext_resource type="AudioStream" uid="uid://4abghqdw3mgg" path="res://sounds/collision.mp3" id="6_kvuet"]
 [ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="7_kvpfn"]
+[ext_resource type="Script" uid="uid://dh2451ngn6w1d" path="res://scripts/player.gd" id="7_ssvqc"]
 [ext_resource type="PackedScene" uid="uid://bfa533n1gdi7y" path="res://scenes/star.tscn" id="10_vtaks"]
 [ext_resource type="Texture2D" uid="uid://b0nvjetek36rr" path="res://textures/navigator_arrow.png" id="11_ca42v"]
 [ext_resource type="Script" uid="uid://bvkcdaa4ll637" path="res://scripts/ui.gd" id="14_trtic"]
@@ -76,6 +77,9 @@ font_size = 32
 outline_size = 16
 outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="LabelSettings" id="LabelSettings_264po"]
+font_size = 32
+
 [sub_resource type="LabelSettings" id="LabelSettings_kvuet"]
 font_size = 128
 
@@ -94,7 +98,6 @@ script = ExtResource("1_gee14")
 position = Vector2(-175, -35)
 
 [node name="UpGuide" type="ColorRect" parent="."]
-visible = false
 offset_right = 4.0
 offset_bottom = 1e+16
 color = Color(1, 1, 1, 0.19607843)
@@ -118,6 +121,12 @@ texture = ExtResource("15_ca42v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PointsOfInterest/SpaceStation/InteractArea"]
 shape = SubResource("RectangleShape2D_rysoc")
+
+[node name="TestPlanet" type="Sprite2D" parent="PointsOfInterest"]
+position = Vector2(15000, 0)
+texture = ExtResource("5_ssvqc")
+
+[node name="InteractArea" type="Area2D" parent="PointsOfInterest/TestPlanet"]
 
 [node name="Sun" type="Sprite2D" parent="PointsOfInterest"]
 position = Vector2(8, 0)
@@ -143,7 +152,7 @@ contact_monitor = true
 max_contacts_reported = 4
 linear_damp = 3.0
 angular_damp = 2.0
-script = ExtResource("1_lnu2h")
+script = ExtResource("7_ssvqc")
 
 [node name="UpGuide2" type="ColorRect" parent="Player"]
 anchors_preset = 7
@@ -371,6 +380,7 @@ offset_right = 496.5
 grow_horizontal = 2
 grow_vertical = 0
 text = "PLEASANT ORBIT - 1000du"
+label_settings = SubResource("LabelSettings_264po")
 horizontal_alignment = 1
 vertical_alignment = 2
 
@@ -431,6 +441,16 @@ layout_mode = 2
 theme = ExtResource("15_ir15t")
 text = "suicide"
 
+[node name="SpaceStation" type="Button" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+theme = ExtResource("15_ir15t")
+text = "teleport to space station"
+
+[node name="TestPlanet" type="Button" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+theme = ExtResource("15_ir15t")
+text = "teleport to test planet"
+
 [node name="GodMode" type="CheckBox" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 text = "godmode enabled"
@@ -438,6 +458,10 @@ text = "godmode enabled"
 [node name="InfiniteBoost" type="CheckBox" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 text = "infinite boost"
+
+[node name="FastOrbit" type="CheckBox" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "fast orbit"
 
 [node name="Settings" type="PanelContainer" parent="CanvasLayer/Control/Pause"]
 visible = false
@@ -514,6 +538,8 @@ text = "close"
 [connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/NewEnemy" to="." method="_on_new_enemy_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/Suicide" to="." method="_on_suicide_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/Suicide" to="CanvasLayer/Control" method="_on_suicide_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/SpaceStation" to="." method="_on_space_station_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/TestPlanet" to="." method="_on_test_planet_pressed"]
 [connection signal="value_changed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/MasterVolume" to="CanvasLayer/Control" method="_on_master_volume_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/MusicVolume" to="CanvasLayer/Control" method="_on_music_volume_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/SoundVolume" to="CanvasLayer/Control" method="_on_sound_volume_value_changed"]

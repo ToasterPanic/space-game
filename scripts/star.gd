@@ -15,6 +15,17 @@ func random_respawn(distance_min = 2000):
 	scale.x = random_size
 	scale.y = scale.x
 	
+	var color = randi_range(1, 20)
+	
+	if color <= 1:
+		modulate = Color(1.0, 0.0, 0.0, 1.0)
+	elif color <= 2:
+		modulate = Color(0.177, 0.242, 1.0, 1.0)
+	elif color <= 3:
+		modulate = Color(1.0, 1.0, 0.0, 1.0)
+	else:
+		modulate = Color(1, 1, 1)
+	
 func _ready() -> void:
 	random_respawn(0)
 

@@ -7,11 +7,13 @@
 - Central star that cooks you alive if you fly into it
 - Space station that heals you and refuels boost
 - Enemies with reasonably-basic AI (manually-spawned)
+- A test planet (non-interactable, but does orbit)
 
 ## Things to know before playing
 
+- Game doesn't run well on lower end hardware. Sorry.
 - Controls are in the pause menu, you can hit [ESC] to view them. 
-- If your mouse keeps moving out of the window, pausing and unpausing should fix it.
+- If your mouse keeps moving out of the window (or otherwise starts going crazy), pausing and unpausing should fix it.
 - The arrow around your spaceship points towards the nearest space station.
 - Running into stuff hurts. Try not to do that.
 - There is no automatic fire.
