@@ -167,7 +167,7 @@ func _process(delta: float) -> void:
 		$BoostParticles.queue_free()
 		mode = INF
 		
-		$Explode.play()
+		$Explode.play() 
 		
 		modulate = Color(1, 1, 1)
 		

@@ -55,7 +55,7 @@ func _process(delta: float) -> void:
 		if game.camera_trauma < 4:
 			game.camera_trauma = 4
 		linear_velocity = Vector2.UP.rotated(rotation) * 1024
-		boost -= delta * 0
+		boost -= delta * 38
 		if boost <= 0:
 			boosting = false
 			
@@ -144,7 +144,7 @@ func _process(delta: float) -> void:
 		
 		await get_tree().create_timer(4).timeout
 		
-		#queue_free()
+		get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 func _on_body_entered(body: Node) -> void:
 	if collision_cooldown > 0: return 

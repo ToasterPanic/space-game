@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://dafar7bnl2xol"]
+[gd_scene load_steps=32 format=3 uid="uid://dafar7bnl2xol"]
 
 [ext_resource type="Script" uid="uid://h3xl3qwkg10j" path="res://scripts/game.gd" id="1_gee14"]
 [ext_resource type="Script" uid="uid://cq8ok3bveef5q" path="res://scenes/player.gd" id="1_lnu2h"]
@@ -82,6 +82,9 @@ font_size = 128
 [sub_resource type="LabelSettings" id="LabelSettings_trtic"]
 font_size = 24
 
+[sub_resource type="LabelSettings" id="LabelSettings_ssvqc"]
+font_size = 24
+
 [node name="Game" type="Node2D"]
 script = ExtResource("1_gee14")
 
@@ -91,6 +94,7 @@ script = ExtResource("1_gee14")
 position = Vector2(-175, -35)
 
 [node name="UpGuide" type="ColorRect" parent="."]
+visible = false
 offset_right = 4.0
 offset_bottom = 1e+16
 color = Color(1, 1, 1, 0.19607843)
@@ -106,7 +110,7 @@ parameters/looping = true
 [node name="PointsOfInterest" type="Node2D" parent="."]
 
 [node name="SpaceStation" type="Sprite2D" parent="PointsOfInterest"]
-position = Vector2(0, 6814)
+position = Vector2(0, 9500)
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("15_ca42v")
 
@@ -156,19 +160,23 @@ color = Color(1, 0, 0, 0.19607843)
 
 [node name="Fire" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("3_u5sy4")
+bus = &"Sounds"
 
 [node name="BoostSound" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("5_0tnpc")
 volume_db = -8.0
+bus = &"Sounds"
 
 [node name="Collision" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("6_kvuet")
 volume_db = -6.0
 pitch_scale = 0.5
+bus = &"Sounds"
 
 [node name="Explode" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("6_dinhu")
 volume_db = 12.0
+bus = &"Sounds"
 
 [node name="BoostParticles" type="GPUParticles2D" parent="Player"]
 modulate = Color(0, 1, 0.7058824, 1)
@@ -408,10 +416,105 @@ label_settings = SubResource("LabelSettings_trtic")
 [node name="HFlowContainer" type="HFlowContainer" parent="CanvasLayer/Control/Pause/VBoxContainer"]
 layout_mode = 2
 
+[node name="Settings" type="Button" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+theme = ExtResource("15_ir15t")
+text = "settings"
+
 [node name="NewEnemy" type="Button" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
 layout_mode = 2
 theme = ExtResource("15_ir15t")
 text = "summon new enemy"
 
+[node name="Suicide" type="Button" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+theme = ExtResource("15_ir15t")
+text = "suicide"
+
+[node name="GodMode" type="CheckBox" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "godmode enabled"
+
+[node name="InfiniteBoost" type="CheckBox" parent="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer"]
+layout_mode = 2
+text = "infinite boost"
+
+[node name="Settings" type="PanelContainer" parent="CanvasLayer/Control/Pause"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -354.5
+offset_top = -76.0
+offset_right = 354.5
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("15_ir15t")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/Pause/Settings"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+text = "settings"
+label_settings = SubResource("LabelSettings_kvuet")
+
+[node name="Label4" type="Label" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+text = "master volume"
+label_settings = SubResource("LabelSettings_ssvqc")
+
+[node name="MasterVolume" type="HSlider" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+value = 100.0
+tick_count = 10
+
+[node name="Label5" type="Label" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+text = "music volume"
+label_settings = SubResource("LabelSettings_ssvqc")
+
+[node name="MusicVolume" type="HSlider" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+value = 100.0
+tick_count = 10
+
+[node name="Label6" type="Label" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+text = "sound volume"
+label_settings = SubResource("LabelSettings_ssvqc")
+
+[node name="SoundVolume" type="HSlider" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+value = 100.0
+tick_count = 10
+
+[node name="Label7" type="Label" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+text = "screen shake"
+label_settings = SubResource("LabelSettings_ssvqc")
+
+[node name="ScreenShake" type="HSlider" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+tick_count = 10
+
+[node name="CloseSettings" type="Button" parent="CanvasLayer/Control/Pause/Settings/VBoxContainer"]
+layout_mode = 2
+text = "close"
+
 [connection signal="body_entered" from="Player" to="Player" method="_on_body_entered"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/NewEnemy" to="." method="_on_new_enemy_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/Suicide" to="." method="_on_suicide_pressed"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/Suicide" to="CanvasLayer/Control" method="_on_suicide_pressed"]
+[connection signal="value_changed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/MasterVolume" to="CanvasLayer/Control" method="_on_master_volume_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/MusicVolume" to="CanvasLayer/Control" method="_on_music_volume_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/SoundVolume" to="CanvasLayer/Control" method="_on_sound_volume_value_changed"]
+[connection signal="pressed" from="CanvasLayer/Control/Pause/Settings/VBoxContainer/CloseSettings" to="CanvasLayer/Control" method="_on_close_settings_pressed"]

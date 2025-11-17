@@ -50,6 +50,12 @@ func _ready() -> void:
 		i += 1
 
 func _process(delta: float) -> void:
+	if $CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/GodMode.button_pressed:
+		$Player.health = 1000
+		
+	if $CanvasLayer/Control/Pause/VBoxContainer/HFlowContainer/InfiniteBoost.button_pressed:
+		$Player.boost = 100
+	
 	$UpGuide.global_position = $Player.global_position
 	$UpGuide.rotation = (Vector2(0, 0) - $Player.global_position).normalized().angle() + rad_to_deg(90)
 	
@@ -102,7 +108,7 @@ func _process(delta: float) -> void:
 	if camera_trauma < 0:
 		camera_trauma = 0
 		
-	$Player/Camera.offset = Vector2(randi_range(-camera_trauma, camera_trauma), randi_range(-camera_trauma, camera_trauma))
+	$Player/Camera.offset = Vector2(randi_range(-camera_trauma, camera_trauma), randi_range(-camera_trauma, camera_trauma)) * $CanvasLayer/Control/Pause/Settings/VBoxContainer/ScreenShake.value
 	
 	var current_zone = null
 	
@@ -123,3 +129,11 @@ func _on_new_enemy_pressed() -> void:
 	enemy.position = $Player.position + Vector2.UP.rotated($Player.rotation) * 1000
 	
 	$Enemies.add_child(enemy)
+
+
+func _on_settings_pressed() -> void:
+	$CanvasLayer/Control/Pause/Settings.visible = true
+
+
+func _on_suicide_pressed() -> void:
+	$Player.health = 0
