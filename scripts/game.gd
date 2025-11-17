@@ -53,6 +53,8 @@ func _process(delta: float) -> void:
 	$UpGuide.global_position = $Player.global_position
 	$UpGuide.rotation = (Vector2(0, 0) - $Player.global_position).normalized().angle() + rad_to_deg(90)
 	
+	$PointsOfInterest.rotation_degrees += delta * 0.03
+	
 	$CanvasLayer/Control/InteractText.visible = false
 	
 	for n in $PointsOfInterest.get_children():
@@ -60,6 +62,10 @@ func _process(delta: float) -> void:
 			$CanvasLayer/Control/InteractText.visible = true
 			if n.get_name() == "SpaceStation":
 				$CanvasLayer/Control/InteractText.text = "press E to heal and refuel"
+			if n.get_name() == "Sun":
+				$CanvasLayer/Control/InteractText.text = "WARNING: RETREAT. CRITICAL HEAT!"
+				if n.get_node("Killzone").get_overlapping_bodies().has($Player):
+					$Player.health -= delta * 200
 	
 	var player_targeted = false
 	

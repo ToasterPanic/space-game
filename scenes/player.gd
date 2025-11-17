@@ -6,6 +6,8 @@ var boost = 100
 var boosting = false
 var angular_target = 0
 
+var dead = false
+
 var collision_cooldown = 0
 
 var mouse_movement = Vector2()
@@ -18,6 +20,8 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _process(delta: float) -> void:
+	if dead: return 
+	
 	collision_cooldown -= delta 
 	
 	$NavigatorArrow.rotation = -rotation + (game.get_node("PointsOfInterest/SpaceStation").global_position - global_position).normalized().angle() - rad_to_deg(90)
@@ -121,6 +125,26 @@ func _process(delta: float) -> void:
 	$Boost/Label.text = str(ceili(boost))
 		
 	modulate = Color(1, health / 1000.0, health / 1000.0)
+	
+	if health <= 0:
+		dead = true 
+		modulate = Color(1, 1, 1)
+		
+		linear_velocity = Vector2()
+		$CollisionShape2D.queue_free()
+		$Sprite.queue_free()
+		$BoostParticles.queue_free()
+		
+		$Explode.play()
+		
+		modulate = Color(1, 1, 1)
+		
+		for n in $ExplosionParticles.get_children():
+			n.restart()
+		
+		await get_tree().create_timer(4).timeout
+		
+		#queue_free()
 
 func _on_body_entered(body: Node) -> void:
 	if collision_cooldown > 0: return 

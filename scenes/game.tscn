@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dafar7bnl2xol"]
+[gd_scene load_steps=31 format=3 uid="uid://dafar7bnl2xol"]
 
 [ext_resource type="Script" uid="uid://h3xl3qwkg10j" path="res://scripts/game.gd" id="1_gee14"]
 [ext_resource type="Script" uid="uid://cq8ok3bveef5q" path="res://scenes/player.gd" id="1_lnu2h"]
@@ -8,6 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://bcc3p2etgrbd8" path="res://sounds/fire.ogg" id="3_u5sy4"]
 [ext_resource type="AudioStream" uid="uid://ciijetw1net7m" path="res://sounds/boost.mp3" id="5_0tnpc"]
 [ext_resource type="PackedScene" uid="uid://dvatrgjfpg6sl" path="res://scenes/asteroid.tscn" id="5_iywne"]
+[ext_resource type="Texture2D" uid="uid://04h2pydmss6l" path="res://textures/sun.png" id="5_rysoc"]
 [ext_resource type="AudioStream" uid="uid://cimj0bvhc5a48" path="res://sounds/explode.mp3" id="6_dinhu"]
 [ext_resource type="AudioStream" uid="uid://4abghqdw3mgg" path="res://sounds/collision.mp3" id="6_kvuet"]
 [ext_resource type="PackedScene" uid="uid://0ypgp5onckx8" path="res://scenes/explosion_particles.tscn" id="7_kvpfn"]
@@ -19,6 +20,12 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rysoc"]
 size = Vector2(2048, 2048)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rysoc"]
+radius = 16386.4
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ssvqc"]
+radius = 15500.0
 
 [sub_resource type="Curve" id="Curve_p57ef"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
@@ -108,6 +115,24 @@ texture = ExtResource("15_ca42v")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PointsOfInterest/SpaceStation/InteractArea"]
 shape = SubResource("RectangleShape2D_rysoc")
 
+[node name="Sun" type="Sprite2D" parent="PointsOfInterest"]
+position = Vector2(8, 0)
+texture = ExtResource("5_rysoc")
+
+[node name="InteractArea" type="Area2D" parent="PointsOfInterest/Sun"]
+position = Vector2(-8, 0)
+scale = Vector2(0.25, 0.25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PointsOfInterest/Sun/InteractArea"]
+shape = SubResource("CircleShape2D_rysoc")
+
+[node name="Killzone" type="Area2D" parent="PointsOfInterest/Sun"]
+position = Vector2(-8, 0)
+scale = Vector2(0.25, 0.25)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PointsOfInterest/Sun/Killzone"]
+shape = SubResource("CircleShape2D_ssvqc")
+
 [node name="Player" type="RigidBody2D" parent="."]
 position = Vector2(0, 7500)
 contact_monitor = true
@@ -115,6 +140,19 @@ max_contacts_reported = 4
 linear_damp = 3.0
 angular_damp = 2.0
 script = ExtResource("1_lnu2h")
+
+[node name="UpGuide2" type="ColorRect" parent="Player"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -2.0
+offset_top = -9999.0
+offset_right = 2.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(1, 0, 0, 0.19607843)
 
 [node name="Fire" type="AudioStreamPlayer" parent="Player"]
 stream = ExtResource("3_u5sy4")
@@ -143,7 +181,7 @@ process_material = SubResource("ParticleProcessMaterial_gee14")
 
 [node name="ExplosionParticles" parent="Player" instance=ExtResource("7_kvpfn")]
 
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
+[node name="Sprite" type="Sprite2D" parent="Player"]
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_uwrxv")
 
